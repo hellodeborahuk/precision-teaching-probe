@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import headingImage from '../assets/heading.png';
 
 // Global mode
 const mode = ref("text"); // 'text' | 'fraction'
@@ -61,30 +62,19 @@ function printGrid() {
 </script>
 
 <template>
-  <div class="container rounded-2xl bg-blue-50">
-    <h1 class="text-7xl">Precision Teaching Grid</h1>
-<!-- 
-    MODE BUTTONS
-    <div class="mode-buttons">
-      <button :class="{ active: mode === 'text' }" @click="mode = 'text'">
-        Text / Number
-      </button>
-      <button
-        :class="{ active: mode === 'fraction' }"
-        @click="mode = 'fraction'"
-      >
-        Fraction
-      </button>
-    </div> -->
-
-    <div class="rounded-2xl border-2 w-full md:w-2/3 mx-6 md:mx-auto m-10 border-blue-200 shadow-2xl shadow-blue-200 p-8 bg-white">
-  <div class="relative flex pb-4 items-center">
+  <div class="container rounded-2xl bg-blue-50 shadow-blue-300 print:shadow-none shadow-xl py-4 print:py-0">
+    <!-- <h1 class="no-print mt-4 mb-8 print:m-0 text-6xl text-gray-700">Probe Creator</h1> -->
+     <div class="w-full md:w-3/5 mx-auto pb-4 print:p-0 no-print">
+      <img :src="headingImage" alt="Precision Teaching Probe Generator" />
+    </div>  
+    <div class="no-print rounded-2xl border-2 w-full md:w-2/3 mx-6 md:mx-auto border-blue-200 shadow-xl shadow-blue-200 p-8 bg-white">
+  <div class="no-print relative flex pb-4 items-center">
     <div class="flex-grow border-t border-2 border-gray-300"></div>
-    <span class="flex-shrink mx-4 text-gray-600 font-bold text-2xl">Enter your 5 items below</span>
+    <span class="flex-shrink mx-4 text-gray-700 font-bold text-3xl">Enter your 5 items below</span>
     <div class="flex-grow border-t border-2 border-gray-300"></div>
   </div>
       <!-- INPUTS -->
-      <div class="inputs w-full md:w-1/2 lg:w-1/3 mx-auto space-y-4">
+      <div class="no-print inputs w-full md:w-1/2 lg:w-1/3 mx-auto space-y-4">
         <div v-for="(input, index) in inputs" :key="index" class="input-box placeholder:text-gray-400 flex items-center border-gray-100 border-2 rounded-lg p-1">
           <!-- TEXT -->
           <span class="text-base leading-none mr-1 select-none">✏️</span>
@@ -93,61 +83,70 @@ function printGrid() {
             v-model="input.value"
             placeholder="Enter value"
           />
-
-          <!-- FRACTION -->
-          <div v-if="mode === 'fraction'" class="fraction-input">
-            <input
-              v-model="input.top"
-              placeholder="Top"
-              class="fraction-field"
-            />
-            <div class="fraction-line"></div>
-            <input
-              v-model="input.bottom"
-              placeholder="Bottom"
-              class="fraction-field"
-            />
-          </div>
         </div>
       </div>
+          <div class="space-x-4 mt-6">
+      <button class="bg-green-400 transition delay-150 duration-300 ease-in-out hover:bg-green-300 border-2 border-green-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="generateGrid">Generate Grid</button>
+      <button class="bg-orange-400 transition delay-150 duration-300 ease-in-out hover:bg-orange-300 border-2 border-orange-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="printGrid">Print / Save PDF</button>
     </div>
-    <button @click="generateGrid">Generate Grid</button>
-    <button @click="printGrid">Print / Save PDF</button>
+    </div>
 
+  <div class="no-print relative flex pt-4 print:p-0 items-center">
+    <div class="flex-grow ml-4 border-t border-dotted border-4 border-blue-300"></div>
+    <span class="flex-shrink mx-4 text-5xl">⭐</span>
+    <div class="flex-grow mr-4 border-t border-dotted border-4 border-blue-300"></div>
+  </div>
+
+    
     <!-- HEADER -->
-    <div class="print-header">
-      <h2>Practice Grid</h2>
-      <p>Name: ____________ &nbsp;&nbsp;&nbsp; Date: ____________</p>
+    <div class="text-center py-6 space-y-2">
+      <h2 class="text-3xl font-semibold">Precision Teaching Probe</h2>
+      <p>Name: ___________________ &nbsp;&nbsp;&nbsp; Date: _____________</p>
     </div>
 
     <!-- GRID -->
-    <table v-if="grid.length" class="grid">
-      <tr v-for="row in 8" :key="row">
-        <td v-for="col in 5" :key="col">
-          <div class="cell-content">
-            <template v-if="grid[(row - 1) * 5 + (col - 1)]">
-              <!-- TEXT -->
-              <span v-if="grid[(row - 1) * 5 + (col - 1)].type === 'text'">
-                {{ grid[(row - 1) * 5 + (col - 1)].value }}
-              </span>
+    <div id="grid-container">
+   <div v-if="grid.length" id="grid-container" class="grid m-4">
+  <div class="w-full border-l border-t border-black">
+    <div
+      v-for="row in 8"
+      :key="row"
+      class="flex w-full"
+      style="height: 28mm;"
+    >
+      <div
+        v-for="col in 5"
+        :key="col"
+        class="flex items-center justify-center border-r border-b border-black overflow-hidden"
+        style="width: 20%; min-width: 0;"
+      >
+        <span class="text-center leading-tight px-1" style="font-size: clamp(12px, 2vw, 22px);">
+          {{ grid[(row - 1) * 5 + (col - 1)]?.value ?? '' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
-              <!-- FRACTION -->
-              <div v-else class="fraction">
-                <span>{{ grid[(row - 1) * 5 + (col - 1)].top }}</span>
-                <div class="fraction-line"></div>
-                <span>{{ grid[(row - 1) * 5 + (col - 1)].bottom }}</span>
-              </div>
-            </template>
-          </div>
-        </td>
-      </tr>
-    </table>
+  <!-- <table v-if="grid.length" class="grid">
+    <tr v-for="row in 8" :key="row">
+      <td v-for="col in 5" :key="col">
+        <div class="cell-content">
+          <template v-if="grid[(row - 1) * 5 + (col - 1)]">
+            <span v-if="grid[(row - 1) * 5 + (col - 1)].type === 'text'">
+              {{ grid[(row - 1) * 5 + (col - 1)].value }}
+            </span>
+          </template>
+        </div>
+      </td>
+    </tr>
+  </table> -->
+</div>
   </div>
 </template>
 
 <style>
-
-
+/* CONTAINER */
 .container {
   max-width: 900px;
   margin: auto;
@@ -161,103 +160,24 @@ function printGrid() {
   gap: 10px;
   margin-bottom: 15px;
 }
-
 .mode-buttons button {
   padding: 8px 12px;
   cursor: pointer;
 }
-
 .mode-buttons .active {
   background: black;
   color: white;
 }
 
-/* INPUTS */
-/* .inputs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-  justify-content: center;
-} */
-
-/* .input-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-} */
-
-/* FRACTION INPUT */
-.fraction-input {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60px;
-}
-
-.fraction-field {
-  width: 100%;
-  text-align: center;
-}
-
-.fraction-line {
-  width: 100%;
-  height: 2px;
-  background: black;
-  margin: 2px 0;
-}
-
-/* HEADER */
-.print-header {
-  margin: 5mm 0;
-}
-
-.print-header h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.print-header p {
-  margin: 2mm 0 0;
-  font-size: 14px;
-}
-
-/* GRID - SAFE PRINT VERSION */
-.grid {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.grid td {
-  border: 1px solid black;
-  width: 20%;
-  height: 28mm; /* safe height */
-  text-align: center;
-  vertical-align: middle;
-  padding: 2mm;
-}
-
-/* CONTENT */
+/* CELL CONTENT */
 .cell-content {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
-}
-
-/* TEXT */
-.grid td span {
+  width: 100%;
   font-size: clamp(14px, 2vw, 22px);
   word-wrap: break-word;
-}
-
-/* FRACTION DISPLAY */
-.fraction {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: clamp(16px, 2vw, 24px);
 }
 
 /* PRINT */
@@ -270,8 +190,20 @@ function printGrid() {
   button,
   .inputs,
   .mode-buttons,
-  h1 {
-    display: none;
+  h1,
+  .no-print {
+    display: none !important;
+  }
+
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  #grid-container {
+    margin: 0 !important;
+    padding: 0 !important;
   }
 }
 </style>

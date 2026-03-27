@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl shadow-md p-6 text-left border border-gray-100">
+  <div class="bg-white rounded-xl shadow-md p-6 print:p-0 text-left border border-gray-100">
     <h2 class="text-lg font-semibold text-gray-800 mb-2">Example Component</h2>
     <p class="text-sm text-gray-500 mb-4">A sample BaseCard component styled with Tailwind.</p>
     <button @click="count++"
