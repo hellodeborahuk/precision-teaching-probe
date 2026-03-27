@@ -5,6 +5,8 @@ import headingImage from '../assets/heading.png';
 // Global mode
 const mode = ref("text"); // 'text' | 'fraction'
 
+const showModal = ref(false)
+
 // Inputs
 const inputs = ref([
   { value: "" },
@@ -62,33 +64,51 @@ function printGrid() {
 </script>
 
 <template>
-  <div class="container rounded-2xl bg-blue-50 shadow-blue-300 print:shadow-none shadow-xl py-4 print:py-0">
+  <div class="container relative rounded-2xl print:bg-none bg-blue-50 shadow-blue-300 print:shadow-none shadow-xl py-4 print:py-0">
     <!-- <h1 class="no-print mt-4 mb-8 print:m-0 text-6xl text-gray-700">Probe Creator</h1> -->
-     <div class="w-full md:w-3/5 mx-auto pb-4 print:p-0 no-print">
+    <div class="absolute top-1 right-1 text-2xl md:text-4xl cursor-pointer select-none" @click="showModal = true">❓</div>
+     <!-- MODAL -->
+      <Teleport to="body">
+        <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center">
+          <!-- Backdrop -->
+          <div class="absolute inset-0 bg-black/50" @click="showModal = false"></div>
+          <!-- Modal box -->
+          <div class="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 z-10">
+            <button class="absolute top-3 right-4 text-gray-400 hover:text-gray-700 text-2xl" @click="showModal = false">✕</button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">About Probe Creator</h2>
+            <p class="text-gray-600 leading-relaxed">
+              Your information text here...
+            </p>
+          </div>
+        </div>
+      </Teleport>
+     <div class="w-2/3 md:w-3/5 mx-auto pb-4 print:p-0 no-print">
       <img :src="headingImage" alt="Precision Teaching Probe Generator" />
     </div>  
-    <div class="no-print rounded-2xl border-2 w-full md:w-2/3 mx-6 md:mx-auto border-blue-200 shadow-xl shadow-blue-200 p-8 bg-white">
-  <div class="no-print relative flex pb-4 items-center">
-    <div class="flex-grow border-t border-2 border-gray-300"></div>
-    <span class="flex-shrink mx-4 text-gray-700 font-bold text-3xl">Enter your 5 items below</span>
-    <div class="flex-grow border-t border-2 border-gray-300"></div>
-  </div>
+    <div class="no-print rounded-2xl border-2 lg:w-2/3 mx-6 md:mx-auto border-blue-200 shadow-xl shadow-blue-200 p-8 bg-white">
+      <div class="no-print relative flex pb-4 items-center">
+        <div class="flex-grow border-t border-2 border-gray-300"></div>
+        <span class="flex-shrink mx-4 text-gray-700 font-bold text-3xl">Enter your 5 items below</span>
+        <div class="flex-grow border-t border-2 border-gray-300"></div>
+      </div>
       <!-- INPUTS -->
-      <div class="no-print inputs w-full md:w-1/2 lg:w-1/3 mx-auto space-y-4">
-        <div v-for="(input, index) in inputs" :key="index" class="input-box placeholder:text-gray-400 flex items-center border-gray-100 border-2 rounded-lg p-1">
+      <div class="no-print inputs w-full lg:w-1/2 xl:w-1/3 mx-auto space-y-4">
+        <div v-for="(input, index) in inputs" :key="index" class="input-box flex items-center border-gray-300 shadow-md border-2 rounded-lg p-1">
           <!-- TEXT -->
           <span class="text-base leading-none mr-1 select-none">✏️</span>
           <input
+          class="text-center "
             v-if="mode === 'text'"
             v-model="input.value"
             placeholder="Enter value"
           />
         </div>
       </div>
-          <div class="space-x-4 mt-6">
-      <button class="bg-green-400 transition delay-150 duration-300 ease-in-out hover:bg-green-300 border-2 border-green-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="generateGrid">Generate Grid</button>
-      <button class="bg-orange-400 transition delay-150 duration-300 ease-in-out hover:bg-orange-300 border-2 border-orange-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="printGrid">Print / Save PDF</button>
-    </div>
+      <hr class="flex-grow border-t border-2 border-gray-300 mt-6">
+        <div class="flex flex-col space-y-4 md:flex-row md:justify-center md:space-y-0  md:space-x-4 mt-6">
+          <button class="bg-green-400 transition delay-150 duration-300 ease-in-out hover:bg-green-300 border-2 border-green-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="generateGrid">Generate Grid</button>
+          <button class="bg-orange-400 transition delay-150 duration-300 ease-in-out hover:bg-orange-300 border-2 border-orange-600 px-4 py-1 shadow-lg rounded-lg text-gray-800 font-semibold text-lg" @click="printGrid">Print / Save PDF</button>
+        </div>
     </div>
 
   <div class="no-print relative flex pt-4 print:p-0 items-center">
@@ -100,7 +120,7 @@ function printGrid() {
     
     <!-- HEADER -->
     <div class="text-center py-6 space-y-2">
-      <h2 class="text-3xl font-semibold">Precision Teaching Probe</h2>
+      <h2 class="text-2xl md:text-3xl font-semibold">Precision Teaching Probe</h2>
       <p>Name: ___________________ &nbsp;&nbsp;&nbsp; Date: _____________</p>
     </div>
 
@@ -143,6 +163,7 @@ function printGrid() {
   </table> -->
 </div>
   </div>
+
 </template>
 
 <style>
